@@ -1,149 +1,115 @@
-# 🤖 Agente Financeiro Inteligente com IA Generativa
+# 🤖 AutoHelp - Assistente de Manutenção Automotiva Preventiva
 
 ## Contexto
 
-Os assistentes virtuais no setor financeiro estão evoluindo de simples chatbots reativos para **agentes inteligentes e proativos**. Neste desafio, você vai idealizar e prototipar um agente financeiro que utiliza IA Generativa para:
+Os assistentes virtuais estão revolucionando a forma como lidamos com tarefas do dia a dia. Neste desafio, idealizamos e prototipamos um agente inteligente voltado para o setor automotivo que utiliza IA Generativa para:
 
-- **Antecipar necessidades** ao invés de apenas responder perguntas
-- **Personalizar** sugestões com base no contexto de cada cliente
-- **Cocriar soluções** financeiras de forma consultiva
-- **Garantir segurança** e confiabilidade nas respostas (anti-alucinação)
-
-> [!TIP]
-> Na pasta [`examples/`](./examples/) você encontra referências de implementação para cada etapa deste desafio.
+- **Educar** proprietários de veículos sobre manutenções de rotina.
+- **Diagnosticar preventivamente** problemas básicos com base em sintomas relatados.
+- **Consultar manuais** de forma rápida e precisa (Foco inicial: Fiat Palio 2016).
+- **Garantir segurança** não alucinando diagnósticos complexos e sempre recomendando um mecânico qualificado para casos críticos.
 
 ---
 
-## O Que Você Deve Entregar
+## O Que Foi Entregue
 
 ### 1. Documentação do Agente
 
-Defina **o que** seu agente faz e **como** ele funciona:
+Definição de **o que** o agente faz e **como** ele funciona:
 
-- **Caso de Uso:** Qual problema financeiro ele resolve? (ex: consultoria de investimentos, planejamento de metas, alertas de gastos)
-- **Persona e Tom de Voz:** Como o agente se comporta e se comunica?
-- **Arquitetura:** Fluxo de dados e integração com a base de conhecimento
-- **Segurança:** Como evitar alucinações e garantir respostas confiáveis?
+- **Caso de Uso:** Auxiliar nas dúvidas sobre manutenção básica, troca de fluidos, calibragem de pneus e cronograma de revisões.
+- **Persona e Tom de Voz:** Amigável, didático, paciente e focado na segurança do usuário.
+- **Arquitetura:** Interação via terminal (ou interface simples), processando a dúvida do usuário, buscando no arquivo de contexto e enviando o prompt formatado para a API de LLM.
+- **Segurança:** Regras estritas no System Prompt para evitar respostas inventadas sobre veículos ou peças não mapeadas na base.
 
-📄 **Template:** [`docs/01-documentacao-agente.md`](./docs/01-documentacao-agente.md)
+📄 **Documentação:** [`docs/01-documentacao-agente.md`](./docs/01-documentacao-agente.md)
 
 ---
 
 ### 2. Base de Conhecimento
 
-Utilize os **dados mockados** disponíveis na pasta [`data/`](./data/) para alimentar seu agente:
+Utilizamos arquivos de texto locais na pasta [`data/`](./data/) para alimentar o agente, garantindo que ele não busque informações genéricas na internet:
 
 | Arquivo | Formato | Descrição |
 |---------|---------|-----------|
-| `transacoes.csv` | CSV | Histórico de transações do cliente |
-| `historico_atendimento.csv` | CSV | Histórico de atendimentos anteriores |
-| `perfil_investidor.json` | JSON | Perfil e preferências do cliente |
-| `produtos_financeiros.json` | JSON | Produtos e serviços disponíveis |
+| `manual_palio2016.txt` | TXT | Especificações de fluidos, pneus e peças do veículo |
+| `cronograma_revisoes.csv` | CSV | Tabela de quilometragem e tempo para manutenções |
+| `guia_sintomas.json` | JSON | Mapeamento de sintomas comuns (ex: ruídos, trancos) e possíveis causas |
 
-Você pode adaptar ou expandir esses dados conforme seu caso de uso.
-
-📄 **Template:** [`docs/02-base-conhecimento.md`](./docs/02-base-conhecimento.md)
+📄 **Documentação:** [`docs/02-base-conhecimento.md`](./docs/02-base-conhecimento.md)
 
 ---
 
 ### 3. Prompts do Agente
 
-Documente os prompts que definem o comportamento do seu agente:
+Documentação das instruções que definem o comportamento da IA:
 
-- **System Prompt:** Instruções gerais de comportamento e restrições
-- **Exemplos de Interação:** Cenários de uso com entrada e saída esperada
-- **Tratamento de Edge Cases:** Como o agente lida com situações limite
+- **System Prompt:** Instruções gerais obrigando o uso exclusivo da base de conhecimento e a inclusão de avisos de segurança ("consulte um mecânico").
+- **Exemplos de Interação (Few-Shot):** Exemplos de como responder sobre o nível do óleo do câmbio e pressão dos pneus.
+- **Tratamento de Edge Cases:** Respostas padronizadas para quando o usuário pergunta sobre um Honda Civic ou outro carro não suportado.
 
-📄 **Template:** [`docs/03-prompts.md`](./docs/03-prompts.md)
+📄 **Documentação:** [`docs/03-prompts.md`](./docs/03-prompts.md)
 
 ---
 
 ### 4. Aplicação Funcional
 
-Desenvolva um **protótipo funcional** do seu agente:
+Protótipo funcional do agente integrado com a LLM:
 
-- Chatbot interativo (sugestão: Streamlit, Gradio ou similar)
-- Integração com LLM (via API ou modelo local)
-- Conexão com a base de conhecimento
+- Chatbot interativo via Terminal Console (construído em Java).
+- Integração com a API via `HttpClient` (nativo do Java 11+).
+- Leitura dinâmica dos arquivos da pasta `data/`.
 
-📁 **Pasta:** [`src/`](./src/)
+📁 **Código Fonte:** [`src/AutoHelpApp.java`](./src/AutoHelpApp.java)
 
 ---
 
 ### 5. Avaliação e Métricas
 
-Descreva como você avalia a qualidade do seu agente:
+Avaliação da qualidade das respostas do agente com base em cenários de teste:
 
-**Métricas Sugeridas:**
-- Precisão/assertividade das respostas
-- Taxa de respostas seguras (sem alucinações)
-- Coerência com o perfil do cliente
+**Métricas Aplicadas:**
+- **Precisão:** Testes de perguntas diretas sobre dados do manual (ex: tipo de óleo).
+- **Segurança (Anti-Alucinação):** Teste de recusa ao perguntar sobre defeitos elétricos complexos não mapeados.
+- **Clareza:** Avaliação da presença do aviso de segurança no final de cada diagnóstico.
 
-📄 **Template:** [`docs/04-metricas.md`](./docs/04-metricas.md)
+📄 **Documentação:** [`docs/04-metricas.md`](./docs/04-metricas.md)
 
 ---
 
 ### 6. Pitch
 
-Grave um **pitch de 3 minutos** (estilo elevador) apresentando:
+Apresentação final do valor do projeto:
 
-- Qual problema seu agente resolve?
-- Como ele funciona na prática?
-- Por que essa solução é inovadora?
+- **Problema:** Falta de conhecimento técnico dos motoristas leva a negligência na manutenção e gastos altos em oficinas.
+- **Solução:** Um assistente de bolso que traduz o manual do carro para uma conversa simples.
+- **Inovação:** Informação hiper-personalizada por modelo de veículo com foco total em prevenção.
 
-📄 **Template:** [`docs/05-pitch.md`](./docs/05-pitch.md)
-
----
-
-## Ferramentas Sugeridas
-
-Todas as ferramentas abaixo possuem versões gratuitas:
-
-| Categoria | Ferramentas |
-|-----------|-------------|
-| **LLMs** | [ChatGPT](https://chat.openai.com/), [Copilot](https://copilot.microsoft.com/), [Gemini](https://gemini.google.com/), [Claude](https://claude.ai/), [Ollama](https://ollama.ai/) |
-| **Desenvolvimento** | [Streamlit](https://streamlit.io/), [Gradio](https://www.gradio.app/), [Google Colab](https://colab.research.google.com/) |
-| **Orquestração** | [LangChain](https://www.langchain.com/), [LangFlow](https://www.langflow.org/), [CrewAI](https://www.crewai.com/) |
-| **Diagramas** | [Mermaid](https://mermaid.js.org/), [Draw.io](https://app.diagrams.net/), [Excalidraw](https://excalidraw.com/) |
+📄 **Documentação:** [`docs/05-pitch.md`](./docs/05-pitch.md)
 
 ---
 
 ## Estrutura do Repositório
 
-```
-📁 lab-agente-financeiro/
+```text
+📁 dio-lab-bia-do-futuro/
 │
 ├── 📄 README.md
 │
-├── 📁 data/                          # Dados mockados para o agente
-│   ├── historico_atendimento.csv     # Histórico de atendimentos (CSV)
-│   ├── perfil_investidor.json        # Perfil do cliente (JSON)
-│   ├── produtos_financeiros.json     # Produtos disponíveis (JSON)
-│   └── transacoes.csv                # Histórico de transações (CSV)
+├── 📁 data/                          # Base de conhecimento do assistente
+│   ├── manual_palio2016.txt          # Especificações técnicas (TXT)
+│   ├── cronograma_revisoes.csv       # Tabela de manutenções (CSV)
+│   └── guia_sintomas.json            # Sintomas e diagnósticos básicos (JSON)
 │
-├── 📁 docs/                          # Documentação do projeto
-│   ├── 01-documentacao-agente.md     # Caso de uso e arquitetura
-│   ├── 02-base-conhecimento.md       # Estratégia de dados
-│   ├── 03-prompts.md                 # Engenharia de prompts
-│   ├── 04-metricas.md                # Avaliação e métricas
-│   └── 05-pitch.md                   # Roteiro do pitch
+├── 📁 docs/                          # Documentação das etapas do projeto
+│   ├── 01-documentacao-agente.md     # Definição e persona
+│   ├── 02-base-conhecimento.md       # Estrutura dos dados
+│   ├── 03-prompts.md                 # System prompts e regras
+│   ├── 04-metricas.md                # Resultados dos testes
+│   └── 05-pitch.md                   # Resumo do projeto
 │
-├── 📁 src/                           # Código da aplicação
-│   └── app.py                        # (exemplo de estrutura)
+├── 📁 src/                           # Código da aplicação funcional
+│   └── AutoHelpApp.java              # Lógica de integração e terminal em Java
 │
-├── 📁 assets/                        # Imagens e diagramas
-│   └── ...
-│
-└── 📁 examples/                      # Referências e exemplos
-    └── README.md
-```
-
----
-
-## Dicas Finais
-
-1. **Comece pelo prompt:** Um bom system prompt é a base de um agente eficaz
-2. **Use os dados mockados:** Eles garantem consistência e evitam problemas com dados sensíveis
-3. **Foque na segurança:** No setor financeiro, evitar alucinações é crítico
-4. **Teste cenários reais:** Simule perguntas que um cliente faria de verdade
-5. **Seja direto no pitch:** 3 minutos passam rápido, vá ao ponto
+└── 📁 assets/                        # Imagens e prints de tela do terminal
+    └── ...
