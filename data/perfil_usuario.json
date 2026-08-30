@@ -1,0 +1,26 @@
+{
+  "nome": "Thiago ",
+  "profissao": "Fiscal",
+  "conhecimento_mecanico": "básico",
+  "objetivo_principal": "Manter a manutenção preventiva em dia e evitar gastos imprevistos com o carro",
+  "preferencia_pecas": "originais",
+  "veiculo_principal": {
+    "marca": "Fiat",
+    "modelo": "Palio",
+    "ano": 2016,
+    "quilometragem_atual": 70500,
+    "uso_diario": true
+  },
+  "alertas_ativos": [
+    {
+      "alerta": "Troca de óleo do motor e filtro",
+      "quilometragem_alvo": 48000,
+      "prazo": "2026-10"
+    },
+    {
+      "alerta": "Inspeção do fluido de embreagem e freio",
+      "quilometragem_alvo": 41500,
+      "prazo": "2026-04"
+    }
+  ]
+}
