@@ -1,0 +1,7 @@
+data,servico,categoria,valor,quilometragem
+2026-02-10,Abastecimento - Gasolina Comum,combustivel,250.00,40800
+2026-02-25,Troca de Óleo 5W30 e Filtro,manutencao_preventiva,180.00,41000
+2026-03-15,Revisão e Óleo da Caixa de Câmbio,manutencao_corretiva,350.00,41200
+2026-04-02,Abastecimento - Gasolina Comum,combustivel,260.00,41450
+2026-04-20,Limpeza do Sistema de Arrefecimento,manutencao_preventiva,220.00,41600
+2026-05-05,Troca das Palhetas do Limpador,acessorios,65.00,41850
