@@ -1,115 +1,56 @@
-# 🤖 AutoHelp - Assistente de Manutenção Automotiva Preventiva
+# 📄 Documentação do Agente: AutoHelp
 
-## Contexto
+## 1. Visão Geral
 
-Os assistentes virtuais estão revolucionando a forma como lidamos com tarefas do dia a dia. Neste desafio, idealizamos e prototipamos um agente inteligente voltado para o setor automotivo que utiliza IA Generativa para:
-
-- **Educar** proprietários de veículos sobre manutenções de rotina.
-- **Diagnosticar preventivamente** problemas básicos com base em sintomas relatados.
-- **Consultar manuais** de forma rápida e precisa (Foco inicial: Fiat Palio 2016).
-- **Garantir segurança** não alucinando diagnósticos complexos e sempre recomendando um mecânico qualificado para casos críticos.
+**Nome do Agente:** AutoHelp  
+**Objetivo Principal:** Atuar como um conselheiro mecânico de bolso, ajudando proprietários de veículos a entender o manual do carro, acompanhar cronogramas de manutenção preventiva e realizar pré-diagnósticos básicos baseados em sintomas relatados, tudo com base em dados técnicos validados.
 
 ---
 
-## O Que Foi Entregue
+## 2. Público-Alvo e Persona
 
-### 1. Documentação do Agente
+**Público-Alvo:** 
+Proprietários de veículos (com foco inicial no modelo Fiat Palio 2016) que não possuem conhecimento técnico aprofundado em mecânica e desejam cuidar de seus carros de forma preventiva, evitando gastos desnecessários e garantindo a segurança no trânsito.
 
-Definição de **o que** o agente faz e **como** ele funciona:
-
-- **Caso de Uso:** Auxiliar nas dúvidas sobre manutenção básica, troca de fluidos, calibragem de pneus e cronograma de revisões.
-- **Persona e Tom de Voz:** Amigável, didático, paciente e focado na segurança do usuário.
-- **Arquitetura:** Interação via terminal (ou interface simples), processando a dúvida do usuário, buscando no arquivo de contexto e enviando o prompt formatado para a API de LLM.
-- **Segurança:** Regras estritas no System Prompt para evitar respostas inventadas sobre veículos ou peças não mapeadas na base.
-
-📄 **Documentação:** [`docs/01-documentacao-agente.md`](./docs/01-documentacao-agente.md)
+**Persona e Tom de Voz:**
+*   **Papel:** Especialista em manutenção automotiva preventiva.
+*   **Tom:** Amigável, didático, paciente e cauteloso.
+*   **Comportamento:** O agente usa linguagem acessível, evitando jargões mecânicos complexos sem explicá-los. Ele é extremamente transparente sobre suas limitações e nunca emite diagnósticos definitivos que possam colocar o usuário em risco.
 
 ---
 
-### 2. Base de Conhecimento
+## 3. Casos de Uso Principais
 
-Utilizamos arquivos de texto locais na pasta [`data/`](./data/) para alimentar o agente, garantindo que ele não busque informações genéricas na internet:
+1.  **Consulta Técnica Direta:**
+    *   *Exemplo:* O usuário precisa saber a especificação correta do óleo do motor, a calibragem dos pneus ou a capacidade do tanque de combustível.
+    *   *Ação do Agente:* Busca a informação exata no arquivo de especificações e repassa ao usuário de forma clara.
 
-| Arquivo | Formato | Descrição |
-|---------|---------|-----------|
-| `manual_palio2016.txt` | TXT | Especificações de fluidos, pneus e peças do veículo |
-| `cronograma_revisoes.csv` | CSV | Tabela de quilometragem e tempo para manutenções |
-| `guia_sintomas.json` | JSON | Mapeamento de sintomas comuns (ex: ruídos, trancos) e possíveis causas |
+2.  **Acompanhamento de Revisões:**
+    *   *Exemplo:* O usuário informa que o carro atingiu 40.000 km e pergunta o que precisa ser trocado.
+    *   *Ação do Agente:* Consulta a tabela de cronograma, lista as peças de desgaste natural que precisam de atenção (ex: fluido de freio/embreagem, velas) e prioriza os itens críticos.
 
-📄 **Documentação:** [`docs/02-base-conhecimento.md`](./docs/02-base-conhecimento.md)
-
----
-
-### 3. Prompts do Agente
-
-Documentação das instruções que definem o comportamento da IA:
-
-- **System Prompt:** Instruções gerais obrigando o uso exclusivo da base de conhecimento e a inclusão de avisos de segurança ("consulte um mecânico").
-- **Exemplos de Interação (Few-Shot):** Exemplos de como responder sobre o nível do óleo do câmbio e pressão dos pneus.
-- **Tratamento de Edge Cases:** Respostas padronizadas para quando o usuário pergunta sobre um Honda Civic ou outro carro não suportado.
-
-📄 **Documentação:** [`docs/03-prompts.md`](./docs/03-prompts.md)
+3.  **Pré-Diagnóstico de Sintomas Básicos:**
+    *   *Exemplo:* O usuário relata dificuldade de engatar as marchas e ruídos metálicos.
+    *   *Ação do Agente:* Identifica o sintoma mapeado, sugere possíveis causas (nível baixo do óleo da caixa de marchas ou desgaste na embreagem) e orienta a inspeção.
 
 ---
 
-### 4. Aplicação Funcional
+## 4. Arquitetura e Fluxo de Dados
 
-Protótipo funcional do agente integrado com a LLM:
+A solução foi estruturada para rodar de forma leve e segura, integrando dados locais à capacidade de interpretação de um grande modelo de linguagem (LLM).
 
-- Chatbot interativo via Terminal Console (construído em Java).
-- Integração com a API via `HttpClient` (nativo do Java 11+).
-- Leitura dinâmica dos arquivos da pasta `data/`.
-
-📁 **Código Fonte:** [`src/AutoHelpApp.java`](./src/AutoHelpApp.java)
-
----
-
-### 5. Avaliação e Métricas
-
-Avaliação da qualidade das respostas do agente com base em cenários de teste:
-
-**Métricas Aplicadas:**
-- **Precisão:** Testes de perguntas diretas sobre dados do manual (ex: tipo de óleo).
-- **Segurança (Anti-Alucinação):** Teste de recusa ao perguntar sobre defeitos elétricos complexos não mapeados.
-- **Clareza:** Avaliação da presença do aviso de segurança no final de cada diagnóstico.
-
-📄 **Documentação:** [`docs/04-metricas.md`](./docs/04-metricas.md)
+1.  **Interface de Entrada:** O usuário interage com o agente através de um terminal console rodando uma aplicação em Java.
+2.  **Processamento de Contexto:** A aplicação lê os arquivos locais da pasta `data/` (TXT, CSV e JSON) que contêm exclusivamente as informações técnicas do veículo referenciado.
+3.  **Montagem do Prompt:** O backend concatena as instruções de comportamento (System Prompt), os dados extraídos e a dúvida do usuário.
+4.  **Integração (API):** A requisição estruturada em JSON é enviada para a API da LLM via protocolo HTTP (`HttpClient` nativo do Java).
+5.  **Resposta:** A IA processa o cruzamento de informações e devolve a resposta formatada para a tela do usuário.
 
 ---
 
-### 6. Pitch
+## 5. Estratégia de Segurança e Anti-Alucinação
 
-Apresentação final do valor do projeto:
+Como o setor automotivo envolve alto custo financeiro e risco à vida, o agente possui travas rígidas de segurança:
 
-- **Problema:** Falta de conhecimento técnico dos motoristas leva a negligência na manutenção e gastos altos em oficinas.
-- **Solução:** Um assistente de bolso que traduz o manual do carro para uma conversa simples.
-- **Inovação:** Informação hiper-personalizada por modelo de veículo com foco total em prevenção.
-
-📄 **Documentação:** [`docs/05-pitch.md`](./docs/05-pitch.md)
-
----
-
-## Estrutura do Repositório
-
-```text
-📁 dio-lab-bia-do-futuro/
-│
-├── 📄 README.md
-│
-├── 📁 data/                          # Base de conhecimento do assistente
-│   ├── manual_palio2016.txt          # Especificações técnicas (TXT)
-│   ├── cronograma_revisoes.csv       # Tabela de manutenções (CSV)
-│   └── guia_sintomas.json            # Sintomas e diagnósticos básicos (JSON)
-│
-├── 📁 docs/                          # Documentação das etapas do projeto
-│   ├── 01-documentacao-agente.md     # Definição e persona
-│   ├── 02-base-conhecimento.md       # Estrutura dos dados
-│   ├── 03-prompts.md                 # System prompts e regras
-│   ├── 04-metricas.md                # Resultados dos testes
-│   └── 05-pitch.md                   # Resumo do projeto
-│
-├── 📁 src/                           # Código da aplicação funcional
-│   └── AutoHelpApp.java              # Lógica de integração e terminal em Java
-│
-└── 📁 assets/                        # Imagens e prints de tela do terminal
-    └── ...
+*   **Restrição de Escopo (Zero Inference):** O agente é instruído no prompt de sistema a nunca deduzir informações ou usar conhecimento pré-treinado fora do contexto fornecido na pasta `data/`.
+*   **Tratamento de Edge Cases:** Se o usuário perguntar sobre outro modelo de veículo (ex: Honda Civic) ou procedimentos complexos (ex: retífica de motor, problemas no módulo de injeção), o agente aciona uma resposta padrão de recusa, informando sua limitação técnica.
+*   **Aviso de Responsabilidade (Disclaimer):** Toda resposta que envolve sugestão de inspeção ou apontamento de possível falha recebe obrigatoriamente a assinatura: *"Lembre-se: o AutoHelp fornece apenas orientações preventivas. Para diagnósticos precisos e reparos de segurança, consulte sempre um mecânico qualificado."*
